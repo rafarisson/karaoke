@@ -48,4 +48,8 @@ class KaraokeList extends StateNotifier<List<KaraokeSinger>> {
 
     state = newState;
   }
+
+  void remove(String id) {
+    state = state.where((s) => s.id != id).toList();
+  }
 }

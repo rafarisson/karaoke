@@ -1,60 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../models/karaoke_singer.dart';
 import '../providers/karaoke_list_provider.dart';
-import '../providers/karaoke_current_singer_provider.dart';
-import '../utils/focus_hook.dart';
 
 class KaraokeItemWidget extends HookConsumerWidget {
-  const KaraokeItemWidget({super.key});
+  final KaraokeSinger singer;
+  final int index;
+
+  const KaraokeItemWidget({
+    super.key,
+    required this.singer,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final singer = ref.watch(karaokeCurrentSinger);
-    final itemFocusNode = useFocusNode();
-    final itemIsFocused = useIsFocused(itemFocusNode);
-
-    final textEditingController = useTextEditingController();
-    final textFieldFocusNode = useFocusNode();
-
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 300),
+    return Opacity(
       opacity: singer.hasSung ? 0.3 : 1.0,
-      child: Material(
-        color: Colors.white,
-        elevation: 6,
-        child: Focus(
-          focusNode: itemFocusNode,
-          onFocusChange: (focused) {
-            if (focused) {
-              textEditingController.text = singer.name;
-            } else {
-              ref
-                  .read(karaokeListProvider.notifier)
-                  .edit(id: singer.id, name: textEditingController.text);
-            }
-          },
-          child: ListTile(
-            onTap: () {
-              itemFocusNode.requestFocus();
-              textFieldFocusNode.requestFocus();
-            },
-            leading: Checkbox(
-              value: singer.hasSung,
-              onChanged: (value) => ref
-                  .read(karaokeListProvider.notifier)
-                  .toggeHasSung(singer.id),
-            ),
-            title: itemIsFocused
-                ? TextField(
-                    autofocus: true,
-                    focusNode: textFieldFocusNode,
-                    controller: textEditingController,
-                  )
-                : Text('${singer.name} ${singer.singCounter}'),
-          ),
-        ),
+      child: ListTile(
+        onTap: () =>
+            ref.read(karaokeListProvider.notifier).toggeHasSung(singer.id),
+        leading: Text('${index + 1}'),
+        title: Text(singer.name),
+        subtitle: Text('${singer.singCounter}'),
+        // trailing: Row(
+        //   mainAxisSize: MainAxisSize.min,
+        //   children: [
+        //     IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+        //     IconButton(
+        //       onPressed: () async {
+        //         final confirm = await showDialog<bool>(
+        //           context: context,
+        //           builder: (context) => AlertDialog(
+        //             title: const Text('Confirmar exclusão'),
+        //             content: Text('Deseja realmente remover "${singer.name}"?'),
+        //             actions: [
+        //               TextButton(
+        //                 onPressed: () => Navigator.of(context).pop(false),
+        //                 child: const Text('Cancelar'),
+        //               ),
+        //               ElevatedButton(
+        //                 style: ElevatedButton.styleFrom(
+        //                   foregroundColor: Colors.red,
+        //                 ),
+        //                 onPressed: () => Navigator.of(context).pop(true),
+        //                 child: const Text('Remover'),
+        //               ),
+        //             ],
+        //           ),
+        //         );
+        //         if (confirm == true) {
+        //           ref.read(karaokeListProvider.notifier).remove(singer.id);
+        //         }
+        //       },
+        //       icon: Icon(Icons.delete),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }

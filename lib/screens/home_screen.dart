@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+// import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../providers/karaoke_list_provider.dart';
-import '../providers/karaoke_current_singer_provider.dart';
+// import '../providers/karaoke_current_singer_provider.dart';
 import '../widgets/karaoke_item_widget.dart';
 import '../widgets/menu_widget.dart';
+import '../widgets/add_singer_dialog.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});
@@ -13,44 +14,49 @@ class HomeScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final singers = ref.watch(filteredSortedKaraokeSingers);
-    final newSingerController = useTextEditingController();
+    // final newSingerController = useTextEditingController();
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        appBar: AppBar(title: const Text('Karaoke App')),
+        body: Column(
           children: [
-            TextField(
-              controller: newSingerController,
-              decoration: const InputDecoration(
-                labelText: 'What do we need to do?',
+            // Padding(
+            //   padding: const EdgeInsets.all(16),
+            //   child: TextField(
+            //     controller: newSingerController,
+            //     decoration: const InputDecoration(
+            //       labelText: 'Add singer',
+            //       border: OutlineInputBorder(),
+            //     ),
+            //     onSubmitted: (value) {
+            //       ref.read(karaokeListProvider.notifier).add(value);
+            //       newSingerController.clear();
+            //     },
+            //   ),
+            // ),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: singers.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final singer = singers[index];
+                  return KaraokeItemWidget(singer: singer, index: index);
+                },
               ),
-              onSubmitted: (value) {
-                ref.read(karaokeListProvider.notifier).add(value);
-                newSingerController.clear();
-              },
             ),
-
-            const SizedBox(height: 42),
-
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Text(
-                '${ref.watch(notSungKaraokeSingersCount)} pendentes',
-                style: const TextStyle(fontSize: 20),
-              ),
-            ),
-
-            if (singers.isNotEmpty) const Divider(height: 0),
-            for (var i = 0; i < singers.length; i++) ...[
-              if (i > 0) const Divider(height: 0),
-              ProviderScope(
-                overrides: [karaokeCurrentSinger.overrideWithValue(singers[i])],
-                child: const KaraokeItemWidget(),
-              ),
-            ],
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => const AddSingerDialog(),
+            );
+          },
         ),
         bottomNavigationBar: const MenuWidget(),
       ),

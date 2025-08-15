@@ -9,6 +9,9 @@ class MenuWidget extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filter = ref.watch(karaokeListFilter);
+    final notSungCount = ref.watch(notSungKaraokeSingersCount);
+    final hasSungCount = ref.watch(hasSungKaraokeSingersCount);
+    final singers = ref.watch(karaokeListProvider);
 
     return BottomNavigationBar(
       elevation: 0.0,
@@ -16,20 +19,20 @@ class MenuWidget extends HookConsumerWidget {
         ref.read(karaokeListFilter.notifier).state =
             KaraokeListFilter.values[value];
       },
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.list),
-          label: 'Todos',
+          label: 'Todos ${singers.isEmpty ? '' : singers.length}',
           tooltip: 'Todos',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.circle),
-          label: 'Pendente',
+          icon: Icon(Icons.mic_none),
+          label: 'Pendente ${notSungCount == 0 ? '' : notSungCount}',
           tooltip: 'Pendente',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.done),
-          label: 'Concluído',
+          label: 'Concluído ${hasSungCount == 0 ? '' : hasSungCount}',
           tooltip: 'Concluído',
         ),
       ],

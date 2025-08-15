@@ -50,3 +50,7 @@ final filteredSortedKaraokeSingers = Provider<List<KaraokeSinger>>((ref) {
 final notSungKaraokeSingersCount = Provider<int>((ref) {
   return ref.watch(karaokeListProvider).where((todo) => !todo.hasSung).length;
 });
+
+final hasSungKaraokeSingersCount = Provider<int>((ref) {
+  return ref.watch(karaokeListProvider).where((todo) => todo.hasSung).length;
+});
