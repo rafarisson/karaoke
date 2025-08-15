@@ -1,10 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/karaoke_singer.dart';
 import '../models/karaoke_list.dart';
+import '../repositories/karaoke_repository.dart';
+
+final karaokeRepositoryProvider = Provider((_) => KaraokeRepository());
 
 final karaokeListProvider =
     StateNotifierProvider<KaraokeList, List<KaraokeSinger>>((ref) {
-      return KaraokeList(const []);
+      final repository = ref.watch(karaokeRepositoryProvider);
+      return KaraokeList(repository);
     });
 
 enum KaraokeListFilter { all, notSung, sung }

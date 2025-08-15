@@ -7,19 +7,50 @@ import '../providers/karaoke_list_provider.dart';
 import '../widgets/karaoke_item_widget.dart';
 import '../widgets/menu_widget.dart';
 import '../widgets/add_singer_dialog.dart';
+import '../widgets/karaoke_alert.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final singers = ref.watch(filteredSortedKaraokeSingers);
+    final singers = ref.watch(karaokeListProvider);
+    final singersSorted = ref.watch(filteredSortedKaraokeSingers);
     // final newSingerController = useTextEditingController();
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Karaoke App')),
+        appBar: AppBar(
+          title: const Text('Karaoke App'),
+          actions: [
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) async {
+                if (value == 'clear') {
+                  if (singers.isNotEmpty) {
+                    final confirm = await KaraokeAlert.show(
+                      context: context,
+                      content: const Text(
+                        'Deseja realmente apagar todos os itens?',
+                      ),
+                    );
+                    if (confirm == true) {
+                      ref.read(karaokeListProvider.notifier).clear();
+                    }
+                  }
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'clear',
+                  enabled: singers.isNotEmpty,
+                  child: Text('Limpar lista'),
+                ),
+              ],
+            ),
+          ],
+        ),
         body: Column(
           children: [
             // Padding(
@@ -39,10 +70,10 @@ class HomeScreen extends HookConsumerWidget {
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: singers.length,
+                itemCount: singersSorted.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
-                  final singer = singers[index];
+                  final singer = singersSorted[index];
                   return KaraokeItemWidget(singer: singer, index: index);
                 },
               ),
@@ -51,12 +82,7 @@ class HomeScreen extends HookConsumerWidget {
         ),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => const AddSingerDialog(),
-            );
-          },
+          onPressed: () => AddSingerAlert.show(context, ref),
         ),
         bottomNavigationBar: const MenuWidget(),
       ),
