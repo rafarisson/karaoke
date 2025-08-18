@@ -13,8 +13,18 @@ class MenuWidget extends HookConsumerWidget {
     final hasSungCount = ref.watch(hasSungKaraokeSingersCount);
     final singers = ref.watch(karaokeListProvider);
 
+    // return BottomAppBar(
+    //   shape: CircularNotchedRectangle(),
+    //   child: Row(
+    //     children: [
+    //       IconButton(icon: Icon(Icons.menu), onPressed: () {}),
+    //       Spacer(),
+    //       IconButton(icon: Icon(Icons.search), onPressed: () {}),
+    //       IconButton(icon: Icon(Icons.more_vert), onPressed: () {}),
+    //     ],
+    //   ),
     return BottomNavigationBar(
-      elevation: 0.0,
+      // elevation: 0.0,
       onTap: (value) {
         ref.read(karaokeListFilter.notifier).state =
             KaraokeListFilter.values[value];
