@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
 import '../models/karaoke_singer.dart';
 
@@ -15,6 +16,7 @@ class KaraokeRepository {
   }
 
   Future<void> clear() async {
+    if (kIsWeb) return;
     final file = await _localFile;
     if (file.existsSync()) {
       await file.writeAsString('[]');
@@ -22,12 +24,14 @@ class KaraokeRepository {
   }
 
   Future<void> save(List<KaraokeSinger> singers) async {
+    if (kIsWeb) return;
     final file = await _localFile;
     final jsonString = jsonEncode(singers.map((s) => s.toJson()).toList());
     await file.writeAsString(jsonString);
   }
 
   Future<List<KaraokeSinger>> load() async {
+    if (kIsWeb) return [];
     try {
       final file = await _localFile;
       if (!await file.exists()) return [];
