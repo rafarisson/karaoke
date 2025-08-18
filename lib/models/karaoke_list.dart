@@ -30,7 +30,9 @@ class KaraokeList extends StateNotifier<List<KaraokeSinger>> {
   }
 
   void add(String name) {
-    final existingCount = state.where((s) => s.name == name).length;
+    final existingCount = state
+        .where((s) => s.name.toLowerCase() == name.toLowerCase())
+        .length;
 
     state = [
       ...state,
