@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // import '../providers/singer_list_provider.dart';
 import '../providers/singer_filter_provider.dart';
 import '../widgets/singer_item.dart';
-import '../widgets/singer_edit_alert.dart';
+// import '../widgets/singer_edit_alert.dart';
 import '../widgets/navbar.dart';
 
 class HomePage extends HookConsumerWidget {
@@ -22,10 +22,11 @@ class HomePage extends HookConsumerWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView.separated(
+            // child: ListView.separated(
+            child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: filteredSingers.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              // separatorBuilder: (_, __) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
                 final singer = filteredSingers[index];
                 return SingerItem(singer: singer, index: index);
@@ -35,13 +36,13 @@ class HomePage extends HookConsumerWidget {
         ],
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => SingerEditAlert.show(context, ref),
-        tooltip: 'Adicionar',
-        shape: CircleBorder(),
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => SingerEditAlert.show(context, ref),
+      //   tooltip: 'Adicionar',
+      //   shape: CircleBorder(),
+      //   child: const Icon(Icons.add),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const NavBar(),
     );
   }

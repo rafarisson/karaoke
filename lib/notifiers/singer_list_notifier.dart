@@ -1,15 +1,28 @@
 import 'package:uuid/uuid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/singer.dart';
+import '../repositories/repository.dart';
 
 const _uuid = Uuid();
 
 class SingerList extends StateNotifier<List<Singer>> {
-  SingerList() : super([]);
+  final SingerRepository repository;
+
+  SingerList(this.repository) : super([]) {
+    _loadInitial();
+  }
+
+  Future<void> _loadInitial() async {
+    state = await repository.load();
+  }
+
+  Future<void> _save() async {
+    await repository.save(state);
+  }
 
   void clear() {
     state = [];
-    // repository.clear();
+    repository.clear();
   }
 
   void add(String name) {
@@ -21,7 +34,7 @@ class SingerList extends StateNotifier<List<Singer>> {
       ...state,
       Singer(id: _uuid.v4(), name: name, singCounter: existingCount + 1),
     ];
-    // _save();
+    _save();
   }
 
   void toggeHasSung(String id) {
@@ -38,7 +51,7 @@ class SingerList extends StateNotifier<List<Singer>> {
     }
 
     state = newState;
-    // _save();
+    _save();
   }
 
   void edit({required String id, required String name}) {
@@ -46,20 +59,27 @@ class SingerList extends StateNotifier<List<Singer>> {
     final replaceIndex = state.indexWhere((singer) => singer.id == id);
 
     if (replaceIndex != -1) {
+      final existingCount = state
+          .where(
+            (s) => s.id != id && s.name.toLowerCase() == name.toLowerCase(),
+          )
+          .length;
+
       newState[replaceIndex] = Singer(
         id: newState[replaceIndex].id,
         hasSung: newState[replaceIndex].hasSung,
-        singCounter: newState[replaceIndex].singCounter,
+        // singCounter: newState[replaceIndex].singCounter,
+        singCounter: existingCount + 1,
         name: name,
       );
     }
 
     state = newState;
-    // _save();
+    _save();
   }
 
   void remove(String id) {
     state = state.where((s) => s.id != id).toList();
-    // _save();
+    _save();
   }
 }
