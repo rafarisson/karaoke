@@ -22,11 +22,16 @@ class HomePage extends HookConsumerWidget {
       body: Column(
         children: [
           Expanded(
-            // child: ListView.separated(
-            child: ListView.builder(
+            child: ListView.separated(
+              // child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: filteredSingers.length,
-              // separatorBuilder: (_, __) => const SizedBox(height: 8),
+              separatorBuilder: (_, __) => const Divider(
+                height: 0,
+                thickness: 0,
+                indent: 0,
+                endIndent: 0,
+              ),
               itemBuilder: (context, index) {
                 final singer = filteredSingers[index];
                 return SingerItem(singer: singer, index: index);
