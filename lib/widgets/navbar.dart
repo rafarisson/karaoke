@@ -39,14 +39,17 @@ class NavBar extends HookConsumerWidget {
               ButtonSegment(
                 icon: Icon(Icons.format_list_bulleted),
                 value: SingerListFilterType.all,
+                tooltip: 'Todos',
               ),
               ButtonSegment(
                 icon: Icon(Icons.mic_none),
                 value: SingerListFilterType.notSung,
+                tooltip: 'Pendentes',
               ),
               ButtonSegment(
                 icon: Icon(Icons.mic_off),
                 value: SingerListFilterType.hasSung,
+                tooltip: 'Concluídos',
               ),
             ],
           ),
