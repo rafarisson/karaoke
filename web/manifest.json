@@ -1,6 +1,6 @@
 {
-    "name": "bruce_karaoke",
-    "short_name": "bruce_karaoke",
+    "name": "karaoke_list",
+    "short_name": "karaoke_list",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

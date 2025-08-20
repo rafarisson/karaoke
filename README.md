@@ -1,4 +1,4 @@
-# bruce_karaoke
+# karaoke_list
 
 A new Flutter project.
 
